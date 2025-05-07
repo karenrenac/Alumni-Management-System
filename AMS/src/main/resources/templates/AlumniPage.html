@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alumni Dashboard - Presidency University</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+    <style>
+        /* Same styles as admin dashboard */
+        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; }
+        .sidebar { width: 250px; background-color: #1d3557; color: white; padding-top: 20px; position: fixed; height: 100vh; }
+        .sidebar h3 { text-align: center; font-weight: bold; margin-bottom: 30px; }
+        .sidebar a { display: block; color: white; padding: 12px 20px; text-decoration: none; transition: background 0.2s; }
+        .sidebar a:hover, .sidebar a.active { background-color: #3e5c76; }
+        .main-content { margin-left: 250px; padding: 30px; flex: 1; background-color: #f5f9fd; overflow-y: auto; }
+        .page-title { font-size: 1.8em; font-weight: bold; color: #1d3557; margin-bottom: 20px; text-align: center; }
+        .card { background: white; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); padding: 30px; }
+        .form-control { background-color: #e8f0fe; color: black; }
+        .btn-primary, .btn-danger, .btn-warning { margin-top: 10px; }
+        footer { background-color: #1d3557; color: white; text-align: center; padding: 10px; position: fixed; width: calc(100% - 250px); bottom: 0; left: 250px; }
+        footer p { margin: 0; font-size: 1em; }
+    </style>
+</head>
+<body>
+<div class="sidebar">
+    <h3>Alumni Dashboard</h3>
+    <a href="#" onclick="toggleSection('profileSection')"><i class="fas fa-user-edit"></i> Update Profile</a> <!-- NEW -->
+    <a href="#" onclick="toggleSection('viewEventsSection')"><i class="fas fa-calendar-alt"></i> View Events</a> <!-- NEW -->
+    <a href="#" onclick="toggleSection('registeredEventsSection')"><i class="fas fa-check-circle"></i> Registered Events</a> <!-- NEW -->
+    <a href="#" onclick="toggleSection('directorySection')"><i class="fas fa-address-book"></i> Alumni Directory</a> <!-- NEW -->
+    <a href="#" onclick="toggleSection('contactSection')"><i class="fas fa-envelope"></i> Contact Admin</a> <!-- NEW -->
+    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<div class="main-content">
+    <div class="page-title">Welcome, Alumni</div>
+    <div class="card">
+
+        <!-- 1. Update Profile Section -->
+        <div id="profileSection" style="display:none;">
+            <h4>Update Your Details</h4>
+            <form th:action="@{/alumni/update}" method="post">
+                <div class="mb-3"><label>Name</label><input type="text" name="name" class="form-control" th:value="${alumni.name}"></div>
+                <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" th:value="${alumni.email}"></div>
+                <div class="mb-3"><label>Username</label><input type="text" name="username" class="form-control" th:value="${alumni.username}"></div>
+                <div class="mb-3"><label>Graduation Year</label><input type="number" name="graduationYear" class="form-control" th:value="${alumni.graduationYear}"></div>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+            </form>
+        </div>
+
+        <!-- 2. View Events -->
+        <div id="viewEventsSection" style="display:none;">
+            <h4>Upcoming Events</h4>
+            <table class="table table-bordered">
+                <thead><tr><th>Event</th><th>Date</th><th>Description</th><th>Action</th></tr></thead>
+                <tbody>
+                    <tr th:each="event : ${events}">
+                        <td th:text="${event.name}"></td>
+                        <td th:text="${event.date}"></td>
+                        <td th:text="${event.description}"></td>
+                        <td>
+                            <form th:action="@{/alumni/events/register}" method="post">
+                                <input type="hidden" name="eventId" th:value="${event.id}" />
+                                <button type="submit" class="btn btn-sm btn-success">Register</button>
+                            </form>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 3. Registered Events -->
+        <div id="registeredEventsSection" style="display:none;">
+            <h4>Your Registered Events</h4>
+            <ul class="list-group">
+                <li th:each="reg : ${registeredEvents}" class="list-group-item">
+                    <strong th:text="${reg.event.name}"></strong> - <span th:text="${reg.event.date}"></span>
+                </li>
+            </ul>
+        </div>
+
+        <!-- 4. Alumni Directory -->
+        <div id="directorySection" style="display:none;">
+            <h4>Alumni Directory</h4>
+            <table class="table table-bordered">
+                <thead><tr><th>Name</th><th>Graduation Year</th><th>Email</th></tr></thead>
+                <tbody>
+                    <tr th:each="al : ${allAlumni}">
+                        <td th:text="${al.name}"></td>
+                        <td th:text="${al.graduationYear}"></td>
+                        <td th:text="${al.email}"></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 5. Contact Admin -->
+        <div id="contactSection" style="display:none;">
+            <h4>Contact Admin</h4>
+            <form th:action="@{/alumni/contact}" method="post">
+                <div class="mb-3"><label>Subject</label><input type="text" name="subject" class="form-control" required></div>
+                <div class="mb-3"><label>Message</label><textarea name="message" class="form-control" rows="4" required></textarea></div>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<footer>
+    <p>📧 contact@presidencyuniversity.in | ☎ +91 98765 43210‬ | 📍 Bengaluru, Karnataka 560064</p>
+</footer>
+
+<script>
+    function toggleSection(id) {
+        document.querySelectorAll('.card > div').forEach(section => section.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+    }
+</script>
+</body>
+</html>

@@ -17,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
@@ -143,10 +144,30 @@ public class AdminController {
 
         model.addAttribute("admin", admin);
         model.addAttribute("events", eventService.fetchAllEvents());
-        return "ViewEvents"; // Matches the new HTML filename
+        return "AdminViewEvents"; // Matches the new HTML filename
+    }
+    
+    
+    @PostMapping("/admin/delete-event")
+    public String deleteEvent(@RequestParam String eventId, HttpSession session) {
+        eventService.deleteEvent(eventId);
+
+        // Activity Log
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin != null) {
+            ActivityLog log = new ActivityLog();
+            log.setAdminId(admin.getAdminId());
+            log.setAction("Deleted event with ID: " + eventId);
+            log.setEntityType("AlumniEvent");
+            log.setEntityId(eventId);
+            log.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            activityLogService.insertLog(log);
+        }
+
+        return "redirect:/admin/events/view";
     }
 
-
+    
     // 7. View Activity Logs
     @GetMapping("/admin/logs")
     public List<ActivityLog> viewActivityLogs() {
@@ -154,8 +175,10 @@ public class AdminController {
     }
 
     // 8. Logout (basic, just frontend redirect)
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout() {
-        return ResponseEntity.ok("Logout successful");
+    @GetMapping("/admin/logout")
+    public String logoutAdmin() {
+       
+        return "redirect:/AdminLogin";
     }
+
 }

@@ -6,80 +6,171 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
     <style>
-        /* Same styles as admin dashboard */
-        body { margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; display: flex; height: 100vh; }
-        .sidebar { width: 250px; background-color: #1d3557; color: white; padding-top: 20px; position: fixed; height: 100vh; }
-        .sidebar h3 { text-align: center; font-weight: bold; margin-bottom: 30px; }
-        .sidebar a { display: block; color: white; padding: 12px 20px; text-decoration: none; transition: background 0.2s; }
-        .sidebar a:hover, .sidebar a.active { background-color: #3e5c76; }
-        .main-content { margin-left: 250px; padding: 30px; flex: 1; background-color: #f5f9fd; overflow-y: auto; }
-        .page-title { font-size: 1.8em; font-weight: bold; color: #1d3557; margin-bottom: 20px; text-align: center; }
-        .card { background: white; border-radius: 15px; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); padding: 30px; }
-        .form-control { background-color: #e8f0fe; color: black; }
-        .btn-primary, .btn-danger, .btn-warning { margin-top: 10px; }
-        footer { background-color: #1d3557; color: white; text-align: center; padding: 10px; position: fixed; width: calc(100% - 250px); bottom: 0; left: 250px; }
-        footer p { margin: 0; font-size: 1em; }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #1d3557;
+            color: white;
+            padding-top: 20px;
+            position: fixed;
+            height: 100vh;
+        }
+
+        .sidebar h3 {
+            text-align: center;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .sidebar a {
+            display: block;
+            color: white;
+            padding: 12px 20px;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        .sidebar a:hover, .sidebar a.active {
+            background-color: #3e5c76;
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 30px;
+            flex: 1;
+            background-color: #f5f9fd;
+            overflow-y: auto;
+        }
+
+        .page-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #1d3557;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+
+        .form-control {
+            background-color: #e8f0fe;
+            color: black;
+        }
+
+        .btn-primary, .btn-danger, .btn-warning {
+            margin-top: 10px;
+        }
+
+        footer {
+            background-color: #1d3557;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: calc(100% - 250px);
+            bottom: 0;
+            left: 250px;
+        }
+
+        footer p {
+            margin: 0;
+            font-size: 1em;
+        }
     </style>
 </head>
 <body>
+
 <div class="sidebar">
     <h3>Alumni Dashboard</h3>
-    <a href="#" onclick="toggleSection('profileSection')"><i class="fas fa-user-edit"></i> Update Profile</a> <!-- NEW -->
-    <a href="#" onclick="toggleSection('viewEventsSection')"><i class="fas fa-calendar-alt"></i> View Events</a> <!-- NEW -->
-    <a href="#" onclick="toggleSection('registeredEventsSection')"><i class="fas fa-check-circle"></i> Registered Events</a> <!-- NEW -->
-    <a href="#" onclick="toggleSection('directorySection')"><i class="fas fa-address-book"></i> Alumni Directory</a> <!-- NEW -->
-    <a href="#" onclick="toggleSection('contactSection')"><i class="fas fa-envelope"></i> Contact Admin</a> <!-- NEW -->
-    <a href="/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    <a href="#" onclick="toggleSection('profileSection')"><i class="fas fa-user"></i> Profile</a>
+	<a th:href="@{/alumni/view-events}"><i class="fas fa-calendar-alt"></i> View Events</a>
+    <a href="#" onclick="toggleSection('registeredEventsSection')"><i class="fas fa-check-circle"></i> Registered Events</a>
+    <a href="#" onclick="toggleSection('directorySection')"><i class="fas fa-address-book"></i> Alumni Directory</a>
+    <a href="#" onclick="toggleSection('contactSection')"><i class="fas fa-envelope"></i> Contact Admin</a>
+    <a href="/alumni/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
 
 <div class="main-content">
     <div class="page-title">Welcome, Alumni</div>
     <div class="card">
 
-        <!-- 1. Update Profile Section -->
-        <div id="profileSection" style="display:none;">
-            <h4>Update Your Details</h4>
-            <form th:action="@{/alumni/update}" method="post">
-                <div class="mb-3"><label>Name</label><input type="text" name="name" class="form-control" th:value="${alumni.name}"></div>
-                <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" th:value="${alumni.email}"></div>
-                <div class="mb-3"><label>Username</label><input type="text" name="username" class="form-control" th:value="${alumni.username}"></div>
-                <div class="mb-3"><label>Graduation Year</label><input type="number" name="graduationYear" class="form-control" th:value="${alumni.graduationYear}"></div>
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-            </form>
-        </div>
+        <!-- Profile Section -->
+        <div id="profileSection" style="display: block;">
+            <h4>Your Profile</h4>
+            <div id="profileView">
+                <p><strong>Name:</strong> <span th:text="${alumni.name}"></span></p>
+                <p><strong>Email:</strong> <span th:text="${alumni.email}"></span></p>
+                <p><strong>Username:</strong> <span th:text="${alumni.username}"></span></p>
+                <p><strong>Graduation Year:</strong> <span th:text="${alumni.graduationYear}"></span></p>
+                <button class="btn btn-sm btn-outline-primary" onclick="toggleEditForm()">Edit</button>
+            </div>
 
-        <!-- 2. View Events -->
-        <div id="viewEventsSection" style="display:none;">
-            <h4>Upcoming Events</h4>
-            <table class="table table-bordered">
-                <thead><tr><th>Event</th><th>Date</th><th>Description</th><th>Action</th></tr></thead>
-                <tbody>
-                    <tr th:each="event : ${events}">
-                        <td th:text="${event.name}"></td>
-                        <td th:text="${event.date}"></td>
-                        <td th:text="${event.description}"></td>
-                        <td>
-                            <form th:action="@{/alumni/events/register}" method="post">
-                                <input type="hidden" name="eventId" th:value="${event.id}" />
-                                <button type="submit" class="btn btn-sm btn-success">Register</button>
-                            </form>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+            <div id="editProfileForm" style="display:none;">
+                <form th:action="@{/alumni/update}" method="post">
+                    <div class="mb-3"><label>Name</label><input type="text" name="name" class="form-control" th:value="${alumni.name}"></div>
+                    <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" th:value="${alumni.email}"></div>
+                    <div class="mb-3"><label>Username</label><input type="text" name="username" class="form-control" th:value="${alumni.username}"></div>
+                    <div class="mb-3"><label>Graduation Year</label><input type="number" name="graduationYear" class="form-control" th:value="${alumni.graduationYear}"></div>
+                    <button type="submit" class="btn btn-success">Save Changes</button>
+                </form>
+            </div>
         </div>
+	
+	<!-- View Events Section -->
+	<div id="viewEventsSection" style="display:none;">
+	    <h4 class="mb-4">Upcoming Events</h4>
+	    
+	    <div class="d-flex flex-column gap-3" th:if="${events != null}">
+	        <div class="card shadow-sm" th:each="event : ${events}">
+	            <div class="card-body">
+	                <h5 class="card-title" th:text="${event.title}">Event Title</h5>
+	                <p><strong>Description:</strong> <span th:text="${event.description}"></span></p>
+	                <p><strong>Venue:</strong> <span th:text="${event.venue}"></span></p>
+	                <p><strong>Date:</strong> <span th:text="${event.eventDate}"></span> |
+	                   <strong>Time:</strong> <span th:text="${event.eventTime}"></span></p>
+	            </div>
+	            <div class="card-footer text-end">
+	                <form th:action="@{/alumni/events/register}" method="post">
+	                    <input type="hidden" name="eventId" th:value="${event.eventId}" />
+	                    <button type="submit" class="btn btn-outline-success btn-sm">Register</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
 
-        <!-- 3. Registered Events -->
+	    <p th:if="${events == null or events.isEmpty()}" class="text-muted">No events available at the moment.</p>
+	</div>
+
+        <!-- Registered Events Section -->
         <div id="registeredEventsSection" style="display:none;">
             <h4>Your Registered Events</h4>
             <ul class="list-group">
-                <li th:each="reg : ${registeredEvents}" class="list-group-item">
-                    <strong th:text="${reg.event.name}"></strong> - <span th:text="${reg.event.date}"></span>
-                </li>
+				<li th:each="reg : ${registeredEvents}" class="list-group-item">
+				    <div>
+				        <h5><strong th:text="${reg.title}">Event Title</strong></h5>
+				        <p><strong>Description:</strong> <span th:text="${reg.description}">Event description</span></p>
+				        <p><strong>Venue:</strong> <span th:text="${reg.venue}">Venue details</span></p>
+				        <p>
+				            <strong>Date:</strong> <span th:text="${reg.eventDate}">2025-05-28</span> |
+				            <strong>Time:</strong> <span th:text="${reg.eventTime}">Time</span>
+				        </p>
+				    </div>
+				</li>
             </ul>
         </div>
 
-        <!-- 4. Alumni Directory -->
+        <!-- Alumni Directory Section -->
         <div id="directorySection" style="display:none;">
             <h4>Alumni Directory</h4>
             <table class="table table-bordered">
@@ -94,7 +185,7 @@
             </table>
         </div>
 
-        <!-- 5. Contact Admin -->
+        <!-- Contact Admin Section -->
         <div id="contactSection" style="display:none;">
             <h4>Contact Admin</h4>
             <form th:action="@{/alumni/contact}" method="post">
@@ -112,10 +203,22 @@
 </footer>
 
 <script>
-    function toggleSection(id) {
-        document.querySelectorAll('.card > div').forEach(section => section.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
+	function toggleSection(id) {
+	    document.querySelectorAll('.main-content .card > div').forEach(section => {
+	        section.style.display = 'none';
+	    });
+	    const target = document.getElementById(id);
+	    if (target) {
+	        target.style.display = 'block';
+	    }
+	}
+
+
+    function toggleEditForm() {
+        document.getElementById("profileView").style.display = 'none';
+        document.getElementById("editProfileForm").style.display = 'block';
     }
 </script>
+
 </body>
 </html>

@@ -113,6 +113,8 @@
                     <th>Date</th>
                     <th>Time</th>
                     <th>Created At</th>
+					<th>Action</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -124,6 +126,12 @@
                     <td th:text="${event.eventDate}"></td>
                     <td th:text="${event.eventTime}"></td>
                     <td th:text="${#dates.format(event.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+					<td>
+					    <form th:action="@{/admin/delete-event}" method="post" onsubmit="return confirm('Are you sure you want to delete this event?');">
+					        <input type="hidden" name="eventId" th:value="${event.eventId}" />
+					        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+					    </form>
+					</td>
                 </tr>
                 </tbody>
             </table>
@@ -135,5 +143,7 @@
 <footer>
     <p>📧 contact@presidencyuniversity.in | ☎ +91 98765 43210‬ | 📍 Bengaluru, Karnataka 560064</p>
 </footer>
+
+
 </body>
 </html>

@@ -1,22 +1,53 @@
 package com.ums.service;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.ums.model.ActivityLog;
+import com.ums.model.Admin;
 import com.ums.model.AlumniEvent;
+import com.ums.model.EventRegistration;
 import com.ums.repository.AlumniEventRepository;
+import com.ums.repository.EventRegistrationRepository;
+
+import jakarta.servlet.http.HttpSession;
 
 @Service
 public class EventServiceImpl implements EventService {
 
     @Autowired
     private AlumniEventRepository eventRepo;
-
+    
+    @Autowired
+    private EventRegistrationRepository eventRegistrationRepo;
+    
+    @Autowired
+    private ActivityLogService activityLogService;
+    
+    @Autowired
+    private HttpSession session;
+    
     @Override
     public AlumniEvent insertEvent(AlumniEvent event) {
-        return eventRepo.save(event);
+    	  AlumniEvent savedEvent = eventRepo.save(event);
+
+    	    Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+    	    if (admin != null) {
+    	        ActivityLog log = new ActivityLog();
+    	        log.setAdminId(admin.getAdminId());
+    	        log.setAction("Created a new event: " + savedEvent.getTitle());
+    	        log.setEntityType("AlumniEvent");
+    	        log.setEntityId(savedEvent.getEventId());
+    	        log.setTimestamp(new Timestamp(System.currentTimeMillis()));
+    	        activityLogService.insertLog(log);
+    	    }
+
+    	    return savedEvent;
     }
 
     @Override
@@ -36,7 +67,13 @@ public class EventServiceImpl implements EventService {
     }
 
     @Override
+    @Transactional
     public void deleteEvent(String eventId) {
+    	// First delete all registrations linked to this event
+        eventRegistrationRepo.deleteByEventId(eventId);
+
+        // Then delete the event
+        eventRepo.deleteById(eventId);
         eventRepo.deleteById(eventId);
     }
 
@@ -44,10 +81,31 @@ public class EventServiceImpl implements EventService {
     public List<AlumniEvent> fetchAllEvents() {
         return eventRepo.findAll();
     }
-
+    
     @Override
     public AlumniEvent fetchEventById(String eventId) {
         return eventRepo.findById(eventId)
                 .orElseThrow(() -> new RuntimeException("Event not found with ID: " + eventId));
     }
+    
+
+    @Override
+    public List<AlumniEvent> getEventsRegisteredByAlumni(int alumniId) {
+        return eventRegistrationRepo.findEventsByAlumniId(alumniId);
+    }
+ 
+    @Override
+    public boolean registerAlumniForEvent(int alumniId, String eventId) {
+        boolean alreadyRegistered = eventRegistrationRepo.existsByAlumniIdAndEventId(alumniId, eventId);
+        if (!alreadyRegistered) {
+            EventRegistration registration = new EventRegistration();
+            registration.setAlumniId(alumniId);
+            registration.setEventId(eventId);
+            eventRegistrationRepo.save(registration);
+            return true;
+        }
+        return false;
+    }
+    
+
 }

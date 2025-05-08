@@ -14,7 +14,9 @@ public class Alumni {
 	private String password;
 	private int graduationYear;
 	private String universityId;
-	
+	@Column(nullable = false)
+	private boolean passwordChangeRequired = true; // Defaults to true for new alumni
+
 	
 	public Alumni(int alumniId, String name, String username, String email, String password, int graduationYear,
 			String universityId) {
@@ -101,6 +103,16 @@ public class Alumni {
 
 	public void setUniversityId(String universityId) {
 		this.universityId = universityId;
+	}
+
+
+	public boolean isPasswordChangeRequired() {
+		return passwordChangeRequired;
+	}
+
+
+	public void setPasswordChangeRequired(boolean passwordChangeRequired) {
+		this.passwordChangeRequired = passwordChangeRequired;
 	}
 	
 	

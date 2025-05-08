@@ -119,12 +119,16 @@ public class AdminController {
     }
 
     
-    
-
     // 6. Post Alumni Event
-    @PostMapping("/admin/events")
-    public AlumniEvent postEvent(@RequestBody AlumniEvent event) {
-        return eventService.insertEvent(event);
+    @PostMapping("/admin/events/save")
+    public String saveEvent(@ModelAttribute AlumniEvent event) {
+        // Optional: validate manual event ID
+        if (event.getEventId() == null || event.getEventId().isBlank()) {
+            throw new IllegalArgumentException("Event ID is required.");
+        }
+
+        eventService.insertEvent(event);
+        return "redirect:/admin/dashboard"; // Redirect back to dashboard after saving
     }
 
     // 7. View Activity Logs

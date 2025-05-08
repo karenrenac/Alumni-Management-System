@@ -1,6 +1,8 @@
 package com.ums.model;
 
 import jakarta.persistence.*;
+
+import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -19,8 +21,15 @@ public class AlumniEvent {
     private LocalDate eventDate;
     private LocalTime eventTime;
 
-    @Column(columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
-    private java.sql.Timestamp createdAt;
+    @Column(nullable = false, updatable = false)
+    private Timestamp createdAt;
+
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = new Timestamp(System.currentTimeMillis());
+        }
+    }
 
     // Constructors
     public AlumniEvent() {}

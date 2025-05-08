@@ -165,7 +165,6 @@
 					                    <th>Name</th>
 					                    <th>Username</th>
 					                    <th>Email</th>
-					                    <th>Password</th>
 					                    <th>Graduation Year</th>
 					                    <th>University ID</th>
 					                    <th>Actions</th>
@@ -177,7 +176,6 @@
 					                    <td class="editable" data-field="name" th:text="${a.name}"></td>
 					                    <td class="editable" data-field="username" th:text="${a.username}"></td>
 					                    <td class="editable" data-field="email" th:text="${a.email}"></td>
-					                    <td class="editable" data-field="password" th:text="${a.password}"></td>
 					                    <td class="editable" data-field="graduationYear" th:text="${a.graduationYear}"></td>
 					                    <td class="editable" data-field="universityId" th:text="${a.universityId}"></td>
 					           
@@ -258,7 +256,12 @@
 		<div id="postEventSection" style="display: none;">
 		    <h4>Post New Event</h4>
 		    <form method="post" action="/admin/events/save" enctype="multipart/form-data" class="needs-validation mt-3" novalidate>
-		        <div class="mb-3">
+				<div class="mb-3">
+				    <label for="eventId" class="form-label">Event ID</label>
+				    <input type="text" class="form-control" id="eventId" name="eventId" placeholder="e.g., EVT001" required>
+				</div>
+
+				<div class="mb-3">
 		            <label for="title" class="form-label">Event Title</label>
 		            <input type="text" class="form-control" id="title" name="title" required>
 		        </div>
@@ -276,11 +279,11 @@
 		        <div class="row">
 		            <div class="col-md-6 mb-3">
 		                <label for="eventDate" class="form-label">Date</label>
-		                <input type="date" class="form-control" id="eventDate" name="event_date" required>
+		                <input type="date" class="form-control" id="eventDate" name="eventDate" required>
 		            </div>
 		            <div class="col-md-6 mb-3">
 		                <label for="eventTime" class="form-label">Time</label>
-		                <input type="time" class="form-control" id="eventTime" name="event_time" required>
+		                <input type="time" class="form-control" id="eventTime" name="eventTime" required>
 		            </div>
 		        </div>
 

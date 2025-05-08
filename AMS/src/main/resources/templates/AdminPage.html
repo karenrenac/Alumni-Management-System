@@ -112,7 +112,8 @@
 <body>
 <div class="sidebar">
 	<h3>Admin Panel</h3>
-	 
+	   <a href="#" onclick="toggleSection('adminProfileSection')"><i class="fas fa-user-circle"></i> View Profile</a>
+
 	   <a href="#!" data-bs-toggle="collapse" data-bs-target="#alumniMenu" aria-expanded="true">
 	       <i class="fas fa-users"></i> Manage Alumni
 	   </a>
@@ -129,9 +130,31 @@
 </div>
 
 <div class="main-content">
-    <div class="page-title">Alumni Dashboard</div>
+    <div class="page-title">Admin Dashboard</div>
 
     <div class="card">
+		<!-- Admin Profile Section -->
+		<div id="adminProfileSection" style="display: none;">
+		    <h4>My Profile</h4>
+		    <form id="adminProfileForm" method="post">
+		        <div class="mb-3">
+		            <label>Full Name</label>
+		            <input type="text" class="form-control" id="adminName" name="fullName" disabled th:value="${admin.fullName}">
+		        </div>
+		        <div class="mb-3">
+		            <label>Username</label>
+		            <input type="text" class="form-control" id="adminUsername" name="username" disabled th:value="${admin.username}">
+		        </div>
+		        <div class="mb-3">
+		            <label>Password</label>
+		            <input type="password" class="form-control" id="adminPassword" name="password" disabled th:value="${admin.password}">
+		        </div>
+		        <button type="button" id="editAdminBtn" class="btn btn-warning">Edit</button>
+		        <button type="submit" id="saveAdminBtn" class="btn btn-primary" style="display: none;">Save</button>
+		    </form>
+		</div>
+
+	
         <!-- Alumni Table -->
 		<div id="alumniTableSection" style="display: block;">
 		    <div th:if="${alumniList != null and !alumniList.isEmpty()}" class="table-responsive mt-3">
@@ -284,6 +307,46 @@
 <footer>
     <p>📧 contact@presidencyuniversity.in | ☎ +91 98765 43210‬ | 📍 Bengaluru, Karnataka 560064</p>
 </footer>
+
+<!--Admin profile script tags-->
+<script>
+    // Toggle View/Edit Mode
+    document.getElementById("editAdminBtn").addEventListener("click", function () {
+        const form = document.getElementById("adminProfileForm");
+        form.querySelectorAll("input").forEach(input => input.disabled = false);
+        this.style.display = "none";
+        document.getElementById("saveAdminBtn").style.display = "inline-block";
+    });
+
+    // Submit and redirect
+    document.getElementById("adminProfileForm").addEventListener("submit", function (e) {
+        e.preventDefault();
+
+        const data = {
+            fullName: document.getElementById("adminName").value,
+            username: document.getElementById("adminUsername").value,
+            password: document.getElementById("adminPassword").value
+        };
+
+        fetch('/admin/update-profile', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(res => {
+            if (res.ok) {
+                // ✅ Redirect to dashboard to reflect updates
+                window.location.href = "/admin/dashboard";
+            } else {
+                alert("Failed to update profile.");
+            }
+        })
+        .catch(err => {
+            console.error("Error updating profile:", err);
+            alert("An error occurred.");
+        });
+    });
+</script>
 
 
 

@@ -63,6 +63,8 @@ public class AdminController {
         }
 
         model.addAttribute("adminId", admin.getAdminId()); //Inject adminId
+        model.addAttribute("admin", admin);  // Add this line
+
         model.addAttribute("alumniList", alumniService.fetchAllAlumni());
         return "AdminPage"; // This should match your Thymeleaf template name
     }
@@ -92,7 +94,32 @@ public class AdminController {
         alumniService.deleteAlumni(id);
         return "redirect:/admin/dashboard";
     }
+    
+    @PostMapping("/admin/update-profile")
+    @ResponseBody
+    public ResponseEntity<String> updateAdminProfile(@RequestBody Admin updatedAdmin, HttpSession session) {
+        Admin loggedInAdmin = (Admin) session.getAttribute("loggedInAdmin");
 
+        if (loggedInAdmin == null) {
+            return ResponseEntity.status(401).body("Unauthorized: Please login.");
+        }
+
+        // Copy updated fields
+        loggedInAdmin.setFullName(updatedAdmin.getFullName());
+        loggedInAdmin.setUsername(updatedAdmin.getUsername());
+        loggedInAdmin.setPassword(updatedAdmin.getPassword());
+
+        try {
+            adminService.updateAdmin(loggedInAdmin, loggedInAdmin.getAdminId());
+            session.setAttribute("loggedInAdmin", loggedInAdmin); // update session
+            return ResponseEntity.ok("Admin profile updated successfully.");
+        } catch (RuntimeException ex) {
+            return ResponseEntity.status(404).body("Update failed: " + ex.getMessage());
+        }
+    }
+
+    
+    
 
     // 6. Post Alumni Event
     @PostMapping("/admin/events")

@@ -65,17 +65,7 @@ public class AdminController {
         model.addAttribute("adminId", admin.getAdminId()); //Inject adminId
         model.addAttribute("admin", admin);  // Add this line
         model.addAttribute("alumniList", alumniService.fetchAllAlumni());
-        model.addAttribute("events", eventService.fetchAllEvents());
-        
-        // Check session flag
-        Boolean showEvents = (Boolean) session.getAttribute("showViewEventsSection");
-        if (showEvents != null && showEvents) {
-            model.addAttribute("events", eventService.fetchAllEvents());
-            model.addAttribute("showViewEventsSection", true);
-            session.removeAttribute("showViewEventsSection");
-        } else {
-            model.addAttribute("showViewEventsSection", false);
-        }
+     
         
         return "AdminPage"; // This should match your Thymeleaf template name
     }
@@ -145,10 +135,17 @@ public class AdminController {
         return "redirect:/admin/dashboard";
     }
     @GetMapping("/admin/events/view")
-    public String viewEvents(HttpSession session) {
-        session.setAttribute("showViewEventsSection", true);
-        return "redirect:/admin/dashboard";
+    public String viewEventsPage(HttpSession session, Model model) {
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin == null) {
+            return "redirect:/AdminLogin";
+        }
+
+        model.addAttribute("admin", admin);
+        model.addAttribute("events", eventService.fetchAllEvents());
+        return "ViewEvents"; // Matches the new HTML filename
     }
+
 
     // 7. View Activity Logs
     @GetMapping("/admin/logs")

@@ -127,7 +127,7 @@
 	       <i class="fas fa-calendar"></i> Alumni Event
 	   </a>
 	   <div class="collapse submenu" id="eventMenu">
-	       <a href="#" onclick="toggleSection('viewEventsSection')"><i class="fas fa-list"></i> View Events</a>
+		<a href="/admin/events/view"><i class="fas fa-list"></i> View Events</a>
 	       <a href="#" onclick="toggleSection('postEventSection')"><i class="fas fa-calendar-plus"></i> Post New Event</a>
 	   </div>
 	   <a href="#" onclick="toggleSection('activityLogSection')"><i class="fas fa-file-alt"></i> View Activity Logs</a>
@@ -302,37 +302,7 @@
 		    </form>
 		</div>
 		
-		<!-- View Events Section -->
-		<div id="viewEventsSection" style="display: block;">
-		    <h4>Existing Alumni Events</h4>
-		    <div th:if="${events != null and !events.isEmpty()}" class="table-responsive mt-3">
-		        <table class="table table-bordered">
-		            <thead>
-		                <tr>
-		                    <th>Event ID</th>
-		                    <th>Title</th>
-		                    <th>Description</th>
-		                    <th>Venue</th>
-		                    <th>Date</th>
-		                    <th>Time</th>
-		                    <th>Created At</th>
-		                </tr>
-		            </thead>
-		            <tbody>
-		                <tr th:each="event : ${events}">
-		                    <td th:text="${event.eventId}"></td>
-		                    <td th:text="${event.title}"></td>
-		                    <td th:text="${event.description}"></td>
-		                    <td th:text="${event.venue}"></td>
-		                    <td th:text="${event.eventDate}"></td>
-		                    <td th:text="${event.eventTime}"></td>
-		                    <td th:text="${#dates.format(event.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
-		                </tr>
-		            </tbody>
-		        </table>
-		    </div>
-		    <p th:if="${events == null or events.isEmpty()}">No events found.</p>
-		</div>
+		
 
 		
 		<!-- Activity Logs Section -->
@@ -343,6 +313,40 @@
 		
 		
     </div>
+	
+	<!-- View Events Section -->
+		
+			<div  class="card" id="viewEventsSection" th:if="${showViewEventsSection}" style="display: block;">
+			    <h4>Existing Alumni Events</h4>
+			    <div th:if="${events != null and !events.isEmpty()}" class="table-responsive mt-3">
+			        <table class="table table-bordered">
+			            <thead>
+			                <tr>
+			                    <th>Event ID</th>
+			                    <th>Title</th>
+			                    <th>Description</th>
+			                    <th>Venue</th>
+			                    <th>Date</th>
+			                    <th>Time</th>
+			                    <th>Created At</th>
+			                </tr>
+			            </thead>
+			            <tbody>
+			                <tr th:each="event : ${events}">
+			                    <td th:text="${event.eventId}"></td>
+			                    <td th:text="${event.title}"></td>
+			                    <td th:text="${event.description}"></td>
+			                    <td th:text="${event.venue}"></td>
+			                    <td th:text="${event.eventDate}"></td>
+			                    <td th:text="${event.eventTime}"></td>
+			                    <td th:text="${#dates.format(event.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
+			                </tr>
+			            </tbody>
+			        </table>
+			    </div>
+			    <p th:if="${events == null or events.isEmpty()}">No events found.</p>
+			</div>
+		</div>	
 </div>
 
 <footer>

@@ -64,8 +64,19 @@ public class AdminController {
 
         model.addAttribute("adminId", admin.getAdminId()); //Inject adminId
         model.addAttribute("admin", admin);  // Add this line
-
         model.addAttribute("alumniList", alumniService.fetchAllAlumni());
+        model.addAttribute("events", eventService.fetchAllEvents());
+        
+        // Check session flag
+        Boolean showEvents = (Boolean) session.getAttribute("showViewEventsSection");
+        if (showEvents != null && showEvents) {
+            model.addAttribute("events", eventService.fetchAllEvents());
+            model.addAttribute("showViewEventsSection", true);
+            session.removeAttribute("showViewEventsSection");
+        } else {
+            model.addAttribute("showViewEventsSection", false);
+        }
+        
         return "AdminPage"; // This should match your Thymeleaf template name
     }
 
@@ -121,14 +132,22 @@ public class AdminController {
     
     // 6. Post Alumni Event
     @PostMapping("/admin/events/save")
-    public String saveEvent(@ModelAttribute AlumniEvent event) {
-        // Optional: validate manual event ID
+    public String saveEvent(@ModelAttribute AlumniEvent event, HttpSession session) {
         if (event.getEventId() == null || event.getEventId().isBlank()) {
             throw new IllegalArgumentException("Event ID is required.");
         }
 
         eventService.insertEvent(event);
-        return "redirect:/admin/dashboard"; // Redirect back to dashboard after saving
+
+        // ✅ Set flag in session so it survives redirect
+        session.setAttribute("showViewEventsSection", true);
+
+        return "redirect:/admin/dashboard";
+    }
+    @GetMapping("/admin/events/view")
+    public String viewEvents(HttpSession session) {
+        session.setAttribute("showViewEventsSection", true);
+        return "redirect:/admin/dashboard";
     }
 
     // 7. View Activity Logs

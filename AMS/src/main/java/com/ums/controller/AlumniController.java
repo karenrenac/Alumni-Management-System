@@ -1,5 +1,6 @@
 package com.ums.controller;
 
+import com.ums.model.Admin;
 import com.ums.model.Alumni;
 import com.ums.model.AlumniEvent;
 import com.ums.model.EventRegistration;
@@ -115,6 +116,10 @@ public class AlumniController {
         session.setAttribute("loggedInAlumni", alumni);
         return "redirect:/Alumni/dashboard";
     }
+    
+    
+    
+
     
     @GetMapping("/alumni/view-events")
     public String showEventsPage(HttpSession session, Model model) {

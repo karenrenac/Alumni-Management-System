@@ -65,7 +65,7 @@ public class AdminController {
 
         model.addAttribute("adminId", admin.getAdminId()); //Inject adminId
         model.addAttribute("admin", admin);  // Add this line
-        model.addAttribute("alumniList", alumniService.fetchAllAlumni());
+        //model.addAttribute("alumniList", alumniService.fetchAllAlumni());
      
         
         return "AdminPage"; // This should match your Thymeleaf template name
@@ -147,6 +147,18 @@ public class AdminController {
         return "AdminViewEvents"; // Matches the new HTML filename
     }
     
+    @GetMapping("/admin/edit-event/{eventId}")
+    public String showEditEventForm(@PathVariable String eventId, Model model, HttpSession session) {
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin == null) {
+            return "redirect:/AdminLogin";
+        }
+
+        AlumniEvent event = eventService.fetchEventById(eventId);
+        model.addAttribute("event", event);
+        model.addAttribute("admin", admin);
+        return "AdminViewEvents";  // This should match your new Thymeleaf edit page
+    }
     
     @PostMapping("/admin/delete-event")
     public String deleteEvent(@RequestParam String eventId, HttpSession session) {

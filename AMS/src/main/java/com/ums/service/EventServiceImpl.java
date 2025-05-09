@@ -60,21 +60,53 @@ public class EventServiceImpl implements EventService {
             existingEvent.setVenue(event.getVenue());
             existingEvent.setEventDate(event.getEventDate());
             existingEvent.setEventTime(event.getEventTime());
-            return eventRepo.save(existingEvent);
+
+            AlumniEvent updatedEvent = eventRepo.save(existingEvent);
+
+            //Log the update
+            Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+            if (admin != null) {
+                ActivityLog log = new ActivityLog();
+                log.setAdminId(admin.getAdminId());
+                log.setAction("Updated event: " + updatedEvent.getTitle());
+                log.setEntityType("AlumniEvent");
+                log.setEntityId(updatedEvent.getEventId());
+                log.setTimestamp(new Timestamp(System.currentTimeMillis()));
+                activityLogService.insertLog(log);
+            }
+
+            return updatedEvent;
         } else {
             throw new RuntimeException("Event not found with ID: " + eventId);
         }
     }
+    
+    
 
     @Override
     @Transactional
     public void deleteEvent(String eventId) {
     	// First delete all registrations linked to this event
         eventRegistrationRepo.deleteByEventId(eventId);
-
+        
+        // Get event title before deleting (optional but useful for logs)
+        String eventTitle = eventRepo.findById(eventId)
+                                     .map(AlumniEvent::getTitle)
+                                     .orElse("Unknown Event");
         // Then delete the event
         eventRepo.deleteById(eventId);
-        eventRepo.deleteById(eventId);
+        
+     // Log the deletion
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin != null) {
+            ActivityLog log = new ActivityLog();
+            log.setAdminId(admin.getAdminId());
+            log.setAction("Deleted event: " + eventTitle);
+            log.setEntityType("AlumniEvent");
+            log.setEntityId(eventId);
+            log.setTimestamp(new Timestamp(System.currentTimeMillis()));
+            activityLogService.insertLog(log);
+        }
     }
 
     @Override

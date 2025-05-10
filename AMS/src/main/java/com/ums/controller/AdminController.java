@@ -80,15 +80,62 @@ public class AdminController {
     // 4. Add Alumni
     @PostMapping("/admin/alumni/add")
     public String addAlumni(@ModelAttribute Alumni alumni) {
+    	 if (alumni.getImageUrl() == null || alumni.getImageUrl().isBlank()) {
+    	        alumni.setImageUrl("/images/default_alumni.png");
+    	        System.out.println("✅ Default image URL set.");
+    	    } else {
+    	        System.out.println("🟡 Submitted image URL: " + alumni.getImageUrl());
+    	    }
+    	 alumni.setPasswordChangeRequired(false);
+    	
+    	
         alumniService.insertAlumni(alumni);
         return "redirect:/admin/dashboard";
     }
+    
+    @GetMapping("/admin/alumni/view")
+    public String viewAlumniDirectory(Model model, HttpSession session) {
+        Admin admin = (Admin) session.getAttribute("loggedInAdmin");
+        if (admin == null) {
+            return "redirect:/AdminLogin";
+        }
 
-    @PostMapping("/admin/alumni/update")
-    public ResponseEntity<String> updateAlumniViaAjax(@RequestBody Alumni updatedAlumni) {
-        alumniService.updateAlumni(updatedAlumni, updatedAlumni.getAlumniId());
-        return ResponseEntity.ok("Alumni updated successfully");
+        List<Alumni> alumniList = alumniService.fetchAllAlumni();
+        model.addAttribute("admin", admin);
+        model.addAttribute("allAlumni", alumniList);
+
+        return "AdminAlumniDirectory"; // ✅ This is your new HTML page
     }
+
+    
+    @PostMapping("/admin/alumni/update")
+    public String updateAlumni(@ModelAttribute Alumni alumni) {
+        Alumni existing = alumniService.fetchAlumniById(alumni.getAlumniId());
+
+        // ✅ Update allowed fields
+        existing.setName(alumni.getName());
+        existing.setEmail(alumni.getEmail());
+        existing.setUsername(alumni.getUsername());
+        existing.setGraduationYear(alumni.getGraduationYear());
+        existing.setBranch(alumni.getBranch());
+        existing.setCompanyName(alumni.getCompanyName());
+        existing.setJobTitle(alumni.getJobTitle());
+
+        // ✅ Preserve existing image if none was submitted
+        if (alumni.getImageUrl() != null && !alumni.getImageUrl().isBlank()) {
+            existing.setImageUrl(alumni.getImageUrl());
+        }
+
+        // ✅ Preserve required fields not present in the form
+        existing.setPassword(alumni.getPassword() != null ? alumni.getPassword() : existing.getPassword());
+        existing.setUniversityId(existing.getUniversityId());
+        existing.setPasswordChangeRequired(existing.isPasswordChangeRequired());
+
+        alumniService.updateAlumni(existing, existing.getAlumniId());
+        return "redirect:/admin/alumni/view";
+    }
+
+
     
     // 5. Delete Alumni
     @PostMapping("/admin/alumni/delete")

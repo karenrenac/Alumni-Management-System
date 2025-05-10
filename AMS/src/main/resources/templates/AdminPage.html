@@ -118,7 +118,7 @@
 	       <i class="fas fa-users"></i> Manage Alumni
 	   </a>
 	   <div class="collapse show submenu" id="alumniMenu">
-	       <a href="#" onclick="toggleSection('alumniTableSection')"><i class="fas fa-table"></i> Fetch Alumni</a>
+		<a href="/admin/alumni/view"><i class="fas fa-id-card"></i> View Alumni</a>
 	       <a href="#" onclick="toggleSection('addFormSection')"><i class="fas fa-user-plus"></i> Add Alumni</a>
 	   </div>
 
@@ -199,38 +199,65 @@
 					    <p th:if="${alumniList == null or alumniList.isEmpty()}">No alumni records found.</p>
 					</div>
 
-		<!-- Add Alumni Form -->
-		<div id="addFormSection" style="display: none;">
-		    <form th:action="@{/admin/alumni/add}" method="post" class="mt-3">
-		        <input type="hidden" name="action" value="add">
-		        <div class="mb-3">
-		            <label>Name</label>
-		            <input type="text" name="name" class="form-control" required />
-		        </div>
-		        <div class="mb-3">
-		            <label>Username</label>
-		            <input type="text" name="username" class="form-control" required />
-		        </div>
-		        <div class="mb-3">
-		            <label>Email</label>
-		            <input type="email" name="email" class="form-control" required />
-		        </div>
-		        <div class="mb-3">
-		            <label>Password</label>
-		            <input type="password" name="password" class="form-control" required />
-		        </div>
-		        <div class="mb-3">
-		            <label>Graduation Year</label>
-		            <input type="number" name="graduationYear" class="form-control" required />
-		        </div>
-		        <div class="mb-3">
-		            <label>University ID</label>
-		            <input type="text" name="universityId" class="form-control" required />
-		        </div>
-		        
-		        <button type="submit" class="btn btn-primary">Add Alumni</button>
-		    </form>
-		</div>
+					<!-- Add Alumni Form -->
+					<div id="addFormSection" style="display: none;">
+					    <form th:action="@{/admin/alumni/add}" method="post" class="mt-3">
+					        <input type="hidden" name="action" value="add">
+
+					        <div class="mb-3">
+					            <label>Name</label>
+					            <input type="text" name="name" class="form-control" required />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Username</label>
+					            <input type="text" name="username" class="form-control" required />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Email</label>
+					            <input type="email" name="email" class="form-control" required />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Password</label>
+					            <input type="password" name="password" class="form-control" required />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Graduation Year</label>
+					            <input type="number" name="graduationYear" class="form-control" required />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>University ID</label>
+					            <input type="text" name="universityId" class="form-control" required />
+					        </div>
+
+					    
+					        <div class="mb-3">
+					            <label>Branch</label>
+					            <input type="text" name="branch" class="form-control" />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Company</label>
+					            <input type="text" name="companyName" class="form-control" />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Job Title</label>
+					            <input type="text" name="jobTitle" class="form-control" />
+					        </div>
+
+					        <div class="mb-3">
+					            <label>Upload Image</label>
+					            <input type="text" name="imageUrl" class="form-control" placeholder="/images/default_alumni.png" />
+					        </div>
+
+					        <button type="submit" class="btn btn-primary">Add Alumni</button>
+					    </form>
+					</div>
 
 		
 		<!-- Contact Alumni Section -->

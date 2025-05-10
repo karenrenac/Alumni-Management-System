@@ -13,8 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.File;
 import java.util.List;
 
 @Controller
@@ -103,6 +105,10 @@ public class AlumniController {
                                       @RequestParam String email,
                                       @RequestParam String username,
                                       @RequestParam int graduationYear,
+                                      @RequestParam String branch,
+                                      @RequestParam String companyName,
+                                      @RequestParam String jobTitle,
+                                      @RequestParam(value = "image", required = false) MultipartFile image,
                                       HttpSession session) {
         Alumni alumni = (Alumni) session.getAttribute("loggedInAlumni");
         if (alumni == null) return "redirect:/AlumniLogin";
@@ -111,15 +117,37 @@ public class AlumniController {
         alumni.setEmail(email);
         alumni.setUsername(username);
         alumni.setGraduationYear(graduationYear);
+        alumni.setBranch(branch);
+        alumni.setCompanyName(companyName);
+        alumni.setJobTitle(jobTitle);
+        try {
+            if (image != null && !image.isEmpty()) {
+                // Define upload directory path
+                String uploadDir = System.getProperty("user.dir") + "/uploads/";
+                File uploadPath = new File(uploadDir);
+                if (!uploadPath.exists()) uploadPath.mkdirs();
+
+                // Construct file path and save the file
+                String fileName = "alumni_" + alumni.getAlumniId() + "_" + image.getOriginalFilename();
+                File dest = new File(uploadPath + "/" + fileName);
+                image.transferTo(dest);
+
+                // Set the image URL relative to static resource mapping
+                alumni.setImageUrl("/uploads/" + fileName);
+                System.out.println("Image uploaded to: " + dest.getAbsolutePath());
+            } else if (alumni.getImageUrl() == null || alumni.getImageUrl().isBlank()) {
+                alumni.setImageUrl("/images/default_alumni.png"); // fallback default image
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
 
         alumniService.updateAlumni(alumni, alumni.getAlumniId());
         session.setAttribute("loggedInAlumni", alumni);
         return "redirect:/Alumni/dashboard";
     }
     
-    
-    
-
     
     @GetMapping("/alumni/view-events")
     public String showEventsPage(HttpSession session, Model model) {
@@ -162,6 +190,18 @@ public class AlumniController {
         }
 
         return "redirect:/alumni/view-events";
+    }
+    
+    @GetMapping("/alumni/directory")
+    public String showAlumniDirectory(Model model, HttpSession session) {
+        Alumni alumni = (Alumni) session.getAttribute("loggedInAlumni");
+        if (alumni == null) {
+            return "redirect:/AlumniLogin";
+        }
+
+        model.addAttribute("alumni", alumni); // For top navbar, etc.
+        model.addAttribute("allAlumni", alumniService.fetchAllAlumni());
+        return "AlumniDirectory";
     }
 
 

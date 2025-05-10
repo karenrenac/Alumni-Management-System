@@ -96,7 +96,7 @@
     <a href="#" onclick="toggleSection('profileSection')"><i class="fas fa-user"></i> Profile</a>
 	<a th:href="@{/alumni/view-events}"><i class="fas fa-calendar-alt"></i> View Events</a>
     <a href="#" onclick="toggleSection('registeredEventsSection')"><i class="fas fa-check-circle"></i> Registered Events</a>
-    <a href="#" onclick="toggleSection('directorySection')"><i class="fas fa-address-book"></i> Alumni Directory</a>
+	<a href="/alumni/directory"><i class="fas fa-address-book"></i> Alumni Directory</a>
     <a href="#" onclick="toggleSection('contactSection')"><i class="fas fa-envelope"></i> Contact Admin</a>
     <a href="/alumni/logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
 </div>
@@ -113,16 +113,31 @@
                 <p><strong>Email:</strong> <span th:text="${alumni.email}"></span></p>
                 <p><strong>Username:</strong> <span th:text="${alumni.username}"></span></p>
                 <p><strong>Graduation Year:</strong> <span th:text="${alumni.graduationYear}"></span></p>
+				<p><strong>Branch:</strong> <span th:text="${alumni.branch}"></span></p>
+				<p><strong>Company:</strong> <span th:text="${alumni.companyName}"></span></p>
+				<p><strong>Job Title:</strong> <span th:text="${alumni.jobTitle}"></span></p>
+				<p><strong>Profile Image:</strong><br>
+				  <img th:src="${alumni.imageUrl}" alt="Profile Image" width="120" class="mt-2 border rounded">
+				</p>
+
                 <button class="btn btn-sm btn-outline-primary" onclick="toggleEditForm()">Edit</button>
             </div>
 
             <div id="editProfileForm" style="display:none;">
-                <form th:action="@{/alumni/update}" method="post">
+				<form th:action="@{/alumni/update}" method="post" enctype="multipart/form-data">
                     <div class="mb-3"><label>Name</label><input type="text" name="name" class="form-control" th:value="${alumni.name}"></div>
                     <div class="mb-3"><label>Email</label><input type="email" name="email" class="form-control" th:value="${alumni.email}"></div>
                     <div class="mb-3"><label>Username</label><input type="text" name="username" class="form-control" th:value="${alumni.username}"></div>
                     <div class="mb-3"><label>Graduation Year</label><input type="number" name="graduationYear" class="form-control" th:value="${alumni.graduationYear}"></div>
-                    <button type="submit" class="btn btn-success">Save Changes</button>
+					<div class="mb-3"><label>Branch</label><input type="text" name="branch" class="form-control" th:value="${alumni.branch}"></div>
+					<div class="mb-3"><label>Company</label><input type="text" name="companyName" class="form-control" th:value="${alumni.companyName}"></div>
+					<div class="mb-3"><label>Job Title</label><input type="text" name="jobTitle" class="form-control" th:value="${alumni.jobTitle}"></div>
+					<div class="mb-3">
+					    <label>Upload New Image</label>
+					    <input type="file" name="image" class="form-control" accept="image/*" />
+					</div>
+
+					<button type="submit" class="btn btn-success">Save Changes</button>
                 </form>
             </div>
         </div>

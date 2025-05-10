@@ -58,6 +58,13 @@ public class AlumniServiceImpl implements AlumniService {
             existingAlumni.setGraduationYear(a.getGraduationYear());
             existingAlumni.setUniversityId(a.getUniversityId());
             existingAlumni.setPasswordChangeRequired(a.isPasswordChangeRequired());
+            existingAlumni.setCompanyName(a.getCompanyName());
+            existingAlumni.setJobTitle(a.getJobTitle());
+            if (a.getImageUrl() != null && !a.getImageUrl().isBlank()) {
+                existingAlumni.setImageUrl(a.getImageUrl());
+            }
+            existingAlumni.setBranch(a.getBranch());
+
 
             Alumni updated = alumniRepo.save(existingAlumni);
 

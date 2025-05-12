@@ -68,9 +68,11 @@
         }
 
         .card img {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
+			width: 100%;
+						    aspect-ratio: 4 / 3;
+						    object-fit: cover;
+						    object-position: center;
+						    border-bottom: 1px solid #ddd;
         }
 
         .card-body {
@@ -118,7 +120,7 @@
     <h2 class="section-title">Alumni Directory</h2>
 
     <div class="row" th:if="${allAlumni != null}">
-        <div class="col-md-4 mb-4" th:each="al : ${allAlumni}">
+		<div class="col-12 col-sm-6 col-lg-3 mb-4" th:each="al : ${allAlumni}">
             <div class="card">
                 <img th:src="${al.imageUrl != null ? al.imageUrl : '/images/default_alumni.png'}"
                      alt="Alumni Image"

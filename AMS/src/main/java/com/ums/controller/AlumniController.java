@@ -31,6 +31,7 @@ public class AlumniController {
     @Autowired
     private EventRegistrationService eventRegistrationService;
 
+ /*   
     // Show login page
     @GetMapping("/AlumniLogin")
     public String showLoginPage() {
@@ -55,6 +56,7 @@ public class AlumniController {
             return "AlumniLogin";
         }
     }
+*/
 
     // Show change password form
     @GetMapping("/alumni/changepassword")
@@ -225,10 +227,13 @@ public class AlumniController {
         return "redirect:/Alumni/dashboard";
     }
 
+   /* 
     // Logout
     @GetMapping("/alumni/logout")
     public String logoutAlumni(HttpSession session) {
         session.invalidate();
         return "redirect:/AlumniLogin";
     }
+    
+*/    
 }

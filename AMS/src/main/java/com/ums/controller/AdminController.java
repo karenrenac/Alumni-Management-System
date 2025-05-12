@@ -34,7 +34,7 @@ public class AdminController {
 
     @Autowired
     private ActivityLogService activityLogService;
-
+/*
  // Show Admin Login Page
     @GetMapping("/AdminLogin")
     public String showAdminLoginPage() {
@@ -53,7 +53,7 @@ public class AdminController {
             return "adminLogin";
         }
     }
-
+*/
  
     // 2. Dashboard (Welcome Page)
     @GetMapping("/admin/dashboard")
@@ -233,11 +233,12 @@ public class AdminController {
         return activityLogService.fetchLogsByAdmin(1);  // Assuming 1 admin for now, adjust later
     }
 
+/*    
     // 8. Logout (basic, just frontend redirect)
     @GetMapping("/admin/logout")
     public String logoutAdmin() {
        
         return "redirect:/AdminLogin";
     }
-
+*/
 }
